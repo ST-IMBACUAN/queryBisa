@@ -1,0 +1,19 @@
+SELECT E.emer_id,
+E.emer_horasuceso,
+B.secc_nombre,
+D.muni_nombre,
+TC.corr_nombre,
+H.clem_nombre,
+M.acdc_apoyovoluntarios + M.acdc_apoyobinomios as CATIDAD_DE_VOLUNTARIOS,
+M.acdc_apoyovoluntarios + M.acdc_apoyobinomios + M.acdc_horasoperacion as HORAS_OPERACION,
+(((TH.hora_valor*M.acdc_apoyovoluntarios)+(TH.hora_valor*M.acdc_apoyobinomios))*M.acdc_horasoperacion) AS VALOR_HORAS_OPERACION
+FROM emer_emergencia E
+LEFT JOIN trb_dirseccionales B ON E.emer_coddirseccionales=B.secc_id
+LEFT JOIN trb_municipios D ON E.emer_codmunicipio=D.muni_id
+LEFT JOIN emer_accionesdc M ON E.emer_id=M.acdc_codEmergencia
+LEFT JOIN emer_hora TH ON TH.hora_id=M.acdc_codHora
+LEFT JOIN trb_corregimientos TC ON TC.corr_codMunicipio=E.emer_codmunicipio
+LEFT JOIN trb_claseemergencias H ON E.emer_codclaseemergencia=H.clem_id 
+WHERE E.emer_coddirseccionales = 91 AND E.emer_padre!='' OR
+E.emer_padre!=NULL
+ORDER BY B.secc_nombre ASC;

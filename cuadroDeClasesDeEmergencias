@@ -1,0 +1,35 @@
+SELECT
+clem_id AS sc1e_id ,
+emer_id,
+dano_id,
+acdc_id,
+clem_nombre AS sc1e_nombre,
+count(emer_id) AS casos,
+sum(dano_victimas) AS muertos,
+sum(dano_heridos) AS heridos,
+sum(dano_desaparecidos) AS desaparecidos,
+sum(dano_damnificados) AS damnificados,
+sum(dano_familiasAfectadas) AS familias,
+sum(dano_viviendasdestruidas) AS viviDestruidas,
+sum(dano_viviendasaveriadas) AS viviAveriadas,
+sum(dano_hectareasquemadas) AS hectareasQuemadas,
+sum(dano_hectareasinundadas) as hectareasInundadas,
+sum(dano_litrossuministrados) AS litrosSuministrados,
+sum(dano_animalesrescatados) AS animalesRescatados,
+sum(acdc_apoyovoluntarios) AS apoyo,
+sum(acdc_apoyobinomios) AS binomio,
+sum(((TH.hora_valor*acdc_apoyovoluntarios)+(TH.hora_valor*acdc_apoyobino
+mios))*M.acdc_horasoperacion) AS TIME_VALUE,
+SUM(dano_metrosQuemadosConato) AS
+dano_metrosQuemadosConato,
+SUM(dano_metrosQuemadosQuema) AS
+dano_metrosQuemadosQuema
+FROM trb_claseemergencias
+LEFT JOIN emer_emergencia ON emer_codclaseemergencia=clem_id AND
+emer_fechareporte BETWEEN &quot;2022-09-01&quot; AND &quot;2023-09-01&quot;
+LEFT JOIN emer_danos ON dano_codemergencia=emer_id
+LEFT JOIN emer_accionesdc M ON acdc_codemergencia=emer_id
+LEFT JOIN emer_hora TH ON TH.hora_id=M.acdc_codHora
+WHERE (emer_padre!=&quot;&quot; OR emer_padre!=NULL)
+GROUP BY clem_id
+ORDER BY clem_nombre asc;

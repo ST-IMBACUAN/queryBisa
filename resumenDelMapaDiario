@@ -1,0 +1,40 @@
+SELECT E.emer_id,
+E.emer_fechasuceso,
+E.emer_horasuceso,
+B.secc_nombre,
+D.muni_nombre,
+G.corr_nombre,
+E.emer_codvereda,
+(SELECT CASE WHEN emer_cubrimiento="I" THEN
+"INTERNACIONAL"
+WHEN emer_cubrimiento="N" THEN "NACIONAL"
+WHEN emer_cubrimiento="R" THEN "REGIONAL"
+WHEN emer_cubrimiento="L" THEN "LOCAL"
+END) AS emer_cubrimiento,
+E.emer_nombre,
+H.clem_nombre,
+(SELECT CASE WHEN emer_estado="A" THEN "ACTIVA"
+WHEN emer_estado="C" THEN "CERRADA"
+END) AS emer_estado,
+(SELECT CASE WHEN emer_nivel="1" THEN "Nivel 1
+(Municipal)"
+WHEN emer_nivel="2" THEN "Nivel 2 (Departamental)"
+WHEN emer_nivel="3" THEN "Nivel 3 (Nacional)"
+WHEN emer_nivel="4" THEN "Caracter Subito (Nacional)"
+END) AS emer_nivel
+FROM emer_emergencia E
+INNER JOIN trb_dirseccionales B ON E.emer_coddirseccionales=B.secc_id
+INNER JOIN trb_municipios D ON E.emer_codmunicipio=D.muni_id
+LEFT JOIN trb_corregimientos G ON E.emer_codcorregimiento=G.corr_id
+LEFT JOIN trb_claseemergencias H ON
+E.emer_codclaseemergencia=H.clem_id
+LEFT JOIN trb_categoriaemergencias I ON
+E.emer_codcategoriaemergencia=I.caem_id
+LEFT JOIN trb_subcategorian1emergencias J ON
+E.emer_codsubcategorian1emergencia=J.sc1e_id
+LEFT JOIN trb_subcategorian2emergencias K ON
+E.emer_codsubcategorian2emergencia=K.sc2e_id
+LEFT JOIN emer_danos L ON E.emer_id= L.dano_codEmergencia
+LEFT JOIN emer_accionesdc M ON E.emer_id=M.acdc_codEmergencia
+WHERE E.emer_coddirseccionales=91
+ORDER BY secc_nombre asc;

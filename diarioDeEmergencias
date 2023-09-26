@@ -1,0 +1,59 @@
+SELECT E.emer_id,
+CONVERT(E.emer_horareporte, DATE) AS emer_fechareporte,
+CONCAT(HOUR(E.emer_horareporte),":",MINUTE(E.emer_horareporte)) AS
+emer_horareporte,
+E.emer_fechasuceso,
+E.emer_horasuceso,
+B.secc_nombre,
+D.muni_nombre,
+C.corr_nombre,
+E.emer_codvereda,
+H.clem_nombre,
+I.caem_nombre,
+OC.comi_nombre,
+L.dano_victimas,
+L.dano_heridos,
+L.dano_desaparecidos,
+L.dano_damnificados,
+L.dano_familiasAfectadas,
+L.dano_viviendasdestruidas,
+L.dano_viviendasaveriadas,
+L.dano_hectareasquemadas,
+L.dano_metrosQuemadosConato,
+L.dano_metrosQuemadosQuema,
+L.dano_litrossuministrados,
+L.dano_animalesrescatados,
+L.dano_hectareasinundadas,
+M.acdc_apoyofuncionarios,
+M.acdc_apoyovoluntarios,
+M.acdc_apoyobinomios,
+M.acdc_horasoperacion,
+M.acdc_imagen1,
+M.acdc_imagen2,
+M.acdc_imagen3,
+E.emer_observaciones,
+(((TH.hora_valor*M.acdc_apoyovoluntarios)+(TH.hora_valor*M.acdc_apoyobinomios)
+)*M.acdc_horasoperacion) AS TIME_VALUE
+FROM emer_emergencia E
+INNER JOIN trb_dirseccionales B ON E.emer_coddirseccionales=B.secc_id
+INNER JOIN trb_municipios D ON E.emer_codmunicipio=D.muni_id
+LEFT JOIN trb_corregimientos C ON C.corr_codMunicipio=E.emer_codmunicipio
+LEFT JOIN trb_claseemergencias H ON E.emer_codclaseemergencia=H.clem_id
+LEFT JOIN trb_categoriaemergencias I ON
+E.emer_codcategoriaemergencia=I.caem_id
+LEFT JOIN trb_subcategorian1emergencias J ON
+E.emer_codsubcategorian1emergencia=J.sc1e_id
+LEFT JOIN trb_subcategorian2emergencias K ON
+E.emer_codsubcategorian2emergencia=K.sc2e_id
+LEFT JOIN emer_danos L ON E.emer_id= L.dano_codEmergencia
+LEFT JOIN emer_accionesdc M ON E.emer_id=M.acdc_codEmergencia
+LEFT JOIN emer_hora TH ON TH.hora_id=M.acdc_codHora
+LEFT JOIN orga_comite OC ON E.emer_coddirseccionales =OC.comi_codseccional
+WHERE E.emer_fechareporte <='2022-09-30' AND B.secc_id=91
+GROUP BY emer_id
+ORDER BY E.emer_horareporte asc;
+
+
+
+
+"falta item 10 juntas/comites"

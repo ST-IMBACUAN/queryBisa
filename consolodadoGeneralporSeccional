@@ -1,0 +1,33 @@
+SELECT
+emer_id,
+dano_codemergencia,
+acdc_codemergencia,
+secc_nombre, 
+H.clem_nombre,
+sum(dano_victimas) as muertos,
+sum(dano_heridos) as heridos,
+sum(dano_desaparecidos) as desaparecidos,
+sum(dano_damnificados) as damnificados,
+sum(dano_familiasAfectadas) as famAfectadas,
+sum(dano_viviendasdestruidas) as viviDestruidas,
+sum(dano_viviendasaveriadas) as viviAveriadas,
+sum(dano_hectareasquemadas) as hectareasQuemadas,
+dano_metrosQuemadosConato,
+dano_metrosQuemadosQuema,
+sum(dano_hectareasinundadas) as hectareasInundadas,
+sum(dano_litrossuministrados) AS litrosSuministrados,
+sum(dano_animalesrescatados) AS animalesRescatados,
+sum(acdc_apoyofuncionarios) as apoyoFunc,
+sum(acdc_apoyovoluntarios) as apoyoVolu,
+sum(acdc_apoyobinomios) as apoyoBino,
+sum(acdc_apoyojuntas) as apoyoJunt,
+sum(acdc_horasoperacion) as horas,
+count(emer_id) AS eventos
+FROM trb_dirseccionales
+LEFT JOIN emer_emergencia E ON E.emer_coddirseccionales = secc_id
+LEFT JOIN emer_danos ON dano_codemergencia=emer_id
+LEFT JOIN emer_accionesdc ON acdc_codemergencia=emer_id
+LEFT JOIN trb_claseemergencias H ON
+E.emer_codclaseemergencia=H.clem_id
+GROUP BY secc_id
+ORDER BY secc_nombre asc;

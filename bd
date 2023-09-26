@@ -1,0 +1,56 @@
+select `e`.`emer_id` AS `emer_id`,`e`.`emer_fechareporte` AS `emer_fechareporte`,
+(select (case when (hour(`e`.`emer_horareporte`) < 10) then 
+(select (case when (minute(`e`.`emer_horareporte`) < 10) then 
+concat('0',hour(`e`.`emer_horareporte`),':0',minute(`e`.`emer_horareporte`)) 
+else concat('0',hour(`e`.`emer_horareporte`),':',minute(`e`.`emer_horareporte`)) 
+end)) else (select (case when (minute(`e`.`emer_horareporte`) < 10) then 
+concat(hour(`e`.`emer_horareporte`),':0',minute(`e`.`emer_horareporte`)) else
+ concat(hour(`e`.`emer_horareporte`),':',minute(`e`.`emer_horareporte`)) 
+ end)) end)) AS `emer_horareporte`,`e`.`emer_fechasuceso` AS `emer_fechasuceso`,
+ `b`.`secc_nombre` AS `secc_nombre`,`b`.`secc_id` AS `secc_id`,`d`.`muni_nombre`
+  AS `muni_nombre`,`e`.`emer_codvereda` AS `emer_codvereda`,`g`.`corr_nombre` 
+  AS `corr_nombre`,(select (case when (`e`.`emer_cubrimiento` = 'I') then
+   'INTERNACIONAL' when (`e`.`emer_cubrimiento` = 'N') then 'NACIONAL' when
+    (`e`.`emer_cubrimiento` = 'R') then 'REGIONAL' when (`e`.`emer_cubrimiento` = 'L') 
+    then 'LOCAL' end)) AS `emer_cubrimiento`,`e`.`emer_nombre` 
+    AS `emer_nombre`,`z`.`uni_desc` AS `Socio`,`h`.`clem_nombre` 
+    AS `clem_nombre`,`i`.`caem_nombre` AS `caem_nombre`,`j`.`sc1e_nombre` 
+    AS `sc1e_nombre`,`k`.`sc2e_nombre` AS `sc2e_nombre`,`l`.`dano_victimas` 
+    AS `dano_victimas`,`l`.`dano_heridos` AS `dano_heridos`,`l`.`dano_desaparecidos` 
+    AS `dano_desaparecidos`,`l`.`dano_damnificados` 
+    AS `dano_damnificados`,`l`.`dano_familiasAfectadas` AS `dano_familiasAfectadas`,
+    `l`.`dano_viviendasdestruidas` AS `dano_viviendasdestruidas`,
+    `l`.`dano_viviendasaveriadas` AS `dano_viviendasaveriadas`,`l`.`dano_hectareasquemadas` 
+    AS `dano_hectareasquemadas`,`l`.`dano_hectareasinundadas` 
+    AS `dano_hectareasinundadas`,`l`.`dano_erupcionesvolcanicas` 
+    AS `dano_erupcionesvolcanicas`,`l`.`dano_accidentestransito` 
+    AS `dano_accidentestransito`,`l`.`dano_infraestructuraAfectada` 
+    AS `dano_infraestructuraAfectada`,`l`.`dano_afectacionAgropecuaria` 
+    AS `dano_afectacionAgropecuaria`,`m`.`acdc_apoyofuncionarios` 
+    AS `acdc_apoyofuncionarios`,`m`.`acdc_apoyovoluntarios` 
+    AS `acdc_apoyovoluntarios`,`m`.`acdc_apoyojuntas` 
+    AS `acdc_apoyojuntas`,`m`.`acdc_horasoperacion` 
+    AS `acdc_horasoperacion`,`m`.`acdc_equipoutilizado` 
+    AS `acdc_equipoutilizado`,`m`.`acdc_accionesrealizadas` AS `acdc_accionesrealizadas`
+    ,(select (case when (`e`.`emer_estado` = 'A') then 'ACTIVA' 
+    when (`e`.`emer_estado` = 'C') then 'CERRADA' end)) AS `emer_estado`,
+    (select (case when (`e`.`emer_nivel` = '1') then 'Nivel 1 (Municipal)'
+     when (`e`.`emer_nivel` = '2') then 'Nivel 2 (Departamental)' 
+     when (`e`.`emer_nivel` = '3') then 'Nivel 3 (Nacional)' 
+     when (`e`.`emer_nivel` = '4') then 'Caracter Subito (Nacional)' 
+     end)) AS `emer_nivel`,(`th`.`hora_valor` * `m`.`acdc_apoyovoluntarios`) 
+     AS `TIME_VALUE`,`e`.`emer_observaciones` AS `emer_observaciones` 
+     from 
+     
+     (((((((((((`emer_emergencia` `e` left join `trb_dirseccionales` `b` 
+     on((`e`.`emer_coddirseccionales` = `b`.`secc_id`))) left join `trb_municipios` `d` 
+     on((`e`.`emer_codmunicipio` = `d`.`muni_id`))) left join `trb_corregimientos` `g` 
+     on((`e`.`emer_codcorregimiento` = `g`.`corr_id`))) left join `trb_claseemergencias` `h` 
+     on((`e`.`emer_codclaseemergencia` = `h`.`clem_id`))) left join `trb_categoriaemergencias` `i` 
+     on((`e`.`emer_codcategoriaemergencia` = `i`.`caem_id`))) left join `trb_subcategorian1emergencias` `j` 
+     on((`e`.`emer_codsubcategorian1emergencia` = `j`.`sc1e_id`))) left join `trb_subcategorian2emergencias` `k` 
+     on((`e`.`emer_codsubcategorian2emergencia` = `k`.`sc2e_id`))) left join `emer_danos` `l` 
+     on((`e`.`emer_id` = `l`.`dano_codemergencia`))) left join `emer_accionesdc` `m` 
+     on((`e`.`emer_id` = `m`.`acdc_codemergencia`))) left join `trb_unirseemergencia` `z` 
+     on((`z`.`uni_id` = `e`.`emer_padre`))) left join `emer_hora` `th` on((`th`.`hora_id` = `m`.`acdc_codHora`))) 
+    
