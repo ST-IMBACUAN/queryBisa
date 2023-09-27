@@ -1,82 +1,44 @@
 SELECT HIGH_PRIORITY
 V.volu_id,
-V.volu_fechaAlta,
 UPPER(B.secc_nombre) as secc_nombre,
 UPPER((SELECT
 CASE
-WHEN volu_pertenencia = &#39;O&#39; THEN H.tior_nombre
-WHEN volu_pertenencia = &#39;S&#39; THEN &#39;Seccional&#39;
-WHEN volu_pertenencia = &#39;C&#39; THEN I.tico_nombre
+WHEN volu_pertenencia = 'O' THEN H.tior_nombre
+WHEN volu_pertenencia = 'S' THEN 'Seccional'
+WHEN volu_pertenencia = 'C' THEN I.tico_nombre
 END )) as tipo_organizacion,
 UPPER((SELECT
 CASE
-WHEN (volu_pertenencia = &#39;O&#39;
+WHEN (volu_pertenencia = 'O'
 and volu_pertenencia3 IS NOT NULL) THEN ORG.orga_nombre
-WHEN (volu_pertenencia = &#39;S&#39;
+WHEN (volu_pertenencia = 'S'
 and volu_pertenencia3 IS NOT NULL) THEN SE.secc_nombre
-WHEN (volu_pertenencia = &#39;C&#39;
+WHEN (volu_pertenencia = 'C'
 and volu_pertenencia3 IS NOT NULL) THEN CO.comi_nombre
-WHEN (volu_pertenencia = &#39;O&#39;
-and volu_pertenencia3 IS NULL) THEN &#39;No Registra&#39;
-WHEN (volu_pertenencia = &#39;S&#39;
+WHEN (volu_pertenencia = 'O'
+and volu_pertenencia3 IS NULL) THEN 'No Registra'
+WHEN (volu_pertenencia = 'S'
 and volu_pertenencia3 IS NULL) THEN B.secc_nombre
-WHEN (volu_pertenencia = &#39;C&#39;
-and volu_pertenencia3 IS NULL) THEN &#39;No Registra&#39;
+WHEN (volu_pertenencia = 'C'
+and volu_pertenencia3 IS NULL) THEN 'No Registra'
 END )) as orga_nombre,
-CONCAT(&#39; &#39;, carn_numero) AS carnet,
-V.volu_cedula,
 V.volu_tipodocumento,
+V.volu_cedula,
 V.volu_nombres,
 V.volu_apellidos,
-(SELECT
-CASE
-WHEN VOLU_CLASE = &#39;O&#39; THEN &#39;LIDER
-VOLUNTARIO OPERATIVO&#39;
-WHEN VOLU_CLASE = &#39;V&#39; THEN
-&#39;VOLUNTARIO&#39;
-WHEN VOLU_CLASE = &#39;C&#39; THEN &#39;LIDER
-VOLUNTARIO CIVILITO&#39;
-WHEN VOLU_CLASE = &#39;J&#39; THEN &#39;LIDER
-VOLUNTARIO JUVENIL&#39;
-WHEN VOLU_CLASE = &#39;H&#39; THEN &#39;LIDER
-VOLUNTARIO ASESOR HONORARIO&#39;
-WHEN VOLU_CLASE = &#39;A&#39; THEN &#39;LIDER
-VOLUNTARIO ASESOR&#39;
-END) as clase,
 D.dist_nombre AS distincion_nombre,
-DIS.divo_fecha AS distincion_fecha,
 DIS.divo_resolucion AS distincion_resolu,
-CONCAT(DATE(V.volu_fechaReporte)) AS FechaReporte,
-DATE(FROM_UNIXTIME(volu_fechaCreacion)) AS creacion_fecha,
-u1.u_name AS creacion_usuario,
-DATE(FROM_UNIXTIME(volu_fechaModificacion)) AS
-modificacion_fecha,
-u2.u_name AS modificacion_usuario
+DIS.divo_fecha AS distincion_fecha,
+CONCAT('', carn_numero) AS carnet
 FROM volu_voluntario V FORCE INDEX (volu_cedula)
 INNER join trb_dirseccionales B ON volu_pertenencia2 = B.secc_id
 LEFT JOIN orga_organizacion as ORG ON volu_pertenencia3 = ORG.orga_id
 LEFT JOIN trb_dirseccionales as SE ON volu_pertenencia3 = SE.secc_id
 LEFT JOIN orga_comite as CO ON volu_pertenencia3 = CO.comi_id
-LEFT JOIN volu_users AS u1 ON u1.u_id = volu_usuarioCreo
-LEFT JOIN volu_users AS u2 ON u2.u_id = volu_usuarioModifico
 LEFT JOIN trb_tipoorganizacion AS H ON H.tior_id = volu_tipoPertenece3
 LEFT JOIN trb_tipocomite AS I ON I.tico_id = volu_tipoPertenece3
 LEFT JOIN volu_carnet AS C ON ( C.carn_voluntario=V.volu_id )
 LEFT JOIN volu_beneficiario ON bene_codVoluntario=V.volu_id
 LEFT JOIN volu_distinciones DIS ON V.volu_id=DIS.divo_codvoluntario
 LEFT JOIN trb_distinciones D ON DIS.divo_coddistincion=D.dist_id
-WHERE
-carn_numero != &#39;&#39;
-AND V.volu_estadoseguridadsocial = &#39;S&#39;
-AND V.volu_foto != &#39;unavailable.jpg&#39;
-AND V.volu_imgCurso!=&#39;unavailable.jpg&#39;
-AND V.volu_imgPoliza!=&#39;unavailable.jpg&#39;
-AND D.dist_estado=&#39;A&#39;
-AND D.dist_nombre IS NOT NULL
-AND B.secc_id=91
-AND volu_codsituadmin!=6
-AND volu_codsituadmin!=7
-AND volu_codsituadmin!=8
-AND volu_codsituadmin!=10
-AND YEAR(DIS.divo_fecha)=&#39;2021&#39;
 GROUP BY V.volu_id

@@ -1,0 +1,147 @@
+Diario de emergencias
+
+1. id   
+2. fechareporte
+3. horareporte
+4. fecha suceso
+5. horasuceso
+6. seccionales
+7. deptos 
+8. municipios
+9. corregimiento
+10. juntas/comite 
+11. clase de emergencia
+12. origen de emergencia
+13. victimas 
+14. heridos 
+15. desaparecidos 
+16. damnificados 
+17. familiasAfectadas 
+18. viviendasdestruidas 
+19. viviendasaveriadas 
+20. hectareasquemadas 
+21. metrosQuemadosConato 
+22. metrosQuemadosQuema 
+23. hectareasinundadas 
+24. litrossuministrados 
+25. animalesrecatadoS
+26. acdc_apoyovoluntarios 
+27. apoyo de binomios
+28.valor de horas de operacion
+29.observaciones
+30. imagen 1
+31. imagen 2
+32. imagen 3
+
+
+Horas de operacion
+
+1. no.
+2. fecha
+3. seccional
+4. municipio
+5. correguimiento
+6. clase de evento
+7. cantidad de voluntarios
+8. horas de operacion 
+9. valor de horas de operacion 
+
+
+Consolidado general por seccional
+
+1.no.
+2.seccional
+3.total eventos
+4.muertos
+5.heridos
+6.numero de personas no localizadas
+7.personas afectadasy/o atendidas
+8.familias afectadas/o atendidas
+9.viviendas destruidas
+10.viviendas averiadas
+11.hectareas quemadas
+12.numero de metros quemados conato 
+13.numero de metros quemados quema 
+14.hectarias inundadas
+15.litros suministrados
+16.animales rescatados
+17.apoyo de voluntarios
+18.apoyo de binomios
+19.horas de operacion
+
+
+Resumen del mapa diario
+
+1.no. 
+2.fecha suceso
+3.hora suceso
+4.seccional
+5.municipio
+6.juntas/comites
+7.clase de emergencia 
+8.cantidad de voluntarios 
+9. descripcion acciones realizadas(observaciones  emer_emergencia)
+10.estado
+
+
+Cuadro de clase de emergencias
+
+1.no.
+2.clase de emergencia
+3.total eventos 
+4.apoyo de voluntarios
+5.apoyo de binomios
+6.muertos
+7.heridos
+8.numero de personas no localizadas
+9.personas afectadas y/o atendidas
+10.familias afectadas y/o atendidas
+11.viviendas destruidas
+12.viviendas averiadas
+13.numero de hectarias quemadas
+14.numero de metros quemados conato
+15.numero de mtros quemados quema
+16.hectarias inundadas
+17.litros suministrados
+18.animales rescatados
+
+
+Libro general de emergencias
+
+1.no
+2. fecha reporte
+3. hora reporte
+4.fecha suceso
+5.hora suceso 
+6. seccional
+7. departamento
+8. municipio
+9.correguimiento
+10.juntas/comites 
+11.unirse a emergencia SOCIO*
+12.clase de emergencia
+13.origen emergencia 
+14.apoyo de voluntarios
+15.apoyo de binomios
+16.horas de operacion
+17.valor horas de operacion
+18.muertos
+19.heridos
+20.numero de personas no localizadas
+21.personas afectadas o atendidas
+22.familias afectadas o atendidas
+23.viviendas destruidas
+24.viviendas averiadas
+25.numero de hectarias quemadas (incendio forestal)
+26.numero de mtros quemados conato
+27.numero de metros quemados quema 
+28.hectarias inundadas
+29.litros suministrados
+30.animales rescatados
+31.infraestructura afectada
+32.afectacion agropecuaria
+33.equipo utilizado
+34.acciones realizadas
+35.observaciones
+36.estado
+

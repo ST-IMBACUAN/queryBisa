@@ -1,30 +1,25 @@
 SELECT HIGH_PRIORITY E.emer_id,
 CONVERT(E.emer_horareporte, DATE) AS emer_fechareporte,
-(SELECT CASE WHEN HOUR(E.emer_horareporte)&lt;10 THEN
-(SELECT CASE WHEN MINUTE(E.emer_horareporte)&lt;10 THEN
-CONCAT(&quot;0&quot;,HOUR(E.emer_horareporte),&quot;:0&quot;,MINUTE(E.emer_horareporte))
+(SELECT CASE WHEN HOUR(E.emer_horareporte)<10 THEN
+(SELECT CASE WHEN MINUTE(E.emer_horareporte)<10 THEN
+CONCAT('0',HOUR(E.emer_horareporte),':0',MINUTE(E.emer_horareporte))
 ELSE
-CONCAT(&quot;0&quot;,HOUR(E.emer_horareporte),&quot;:&quot;,MINUTE(E.emer_horareporte))
+CONCAT('0',HOUR(E.emer_horareporte),':',MINUTE(E.emer_horareporte))
 END)
 ELSE
-(SELECT CASE WHEN MINUTE(E.emer_horareporte)&lt;10 THEN
-CONCAT(HOUR(E.emer_horareporte),&quot;:0&quot;,MINUTE(E.emer_horareporte))
+(SELECT CASE WHEN MINUTE(E.emer_horareporte)<10 THEN
+CONCAT(HOUR(E.emer_horareporte),':0',MINUTE(E.emer_horareporte))
 ELSE
-CONCAT(HOUR(E.emer_horareporte),&quot;:&quot;,MINUTE(E.emer_horareporte))
+CONCAT(HOUR(E.emer_horareporte),':',MINUTE(E.emer_horareporte))
 END)
 END ) AS emer_horareporte,
 E.emer_fechasuceso,
+E.emer_horasuceso,
 B.secc_nombre,
 D.muni_nombre,
-E.emer_codvereda,
+E.emer_coddirseccionales,
 G.corr_nombre,
-(SELECT CASE WHEN E.emer_cubrimiento=&quot;I&quot; THEN
-&quot;INTERNACIONAL&quot;
-WHEN E.emer_cubrimiento=&quot;N&quot; THEN &quot;NACIONAL&quot;
-WHEN E.emer_cubrimiento=&quot;R&quot; THEN &quot;REGIONAL&quot;
-WHEN E.emer_cubrimiento=&quot;L&quot; THEN &quot;LOCAL&quot;
-END) AS emer_cubrimiento,
-E.emer_nombre,
+OC.comi_nombre,
 Z.uni_desc AS Socio,
 H.clem_nombre,
 I.caem_nombre,
@@ -38,6 +33,8 @@ L.dano_familiasAfectadas,
 L.dano_viviendasdestruidas,
 L.dano_viviendasaveriadas,
 L.dano_hectareasquemadas,
+L.dano_metrosQuemadosConato,
+L.dano_metrosQuemadosQuema,
 L.dano_hectareasinundadas,
 L.dano_erupcionesvolcanicas,
 L.dano_litrossuministrados,
@@ -49,34 +46,30 @@ M.acdc_apoyovoluntarios,
 M.acdc_apoyobinomios,
 M.acdc_apoyojuntas,
 M.acdc_horasoperacion,
+(((TH.hora_valor*M.acdc_apoyovoluntarios)+(TH.hora_valor*M.acdc_apoyobinomios))*M.acdc_horasoperacion) AS TIME_VALUE,
 M.acdc_equipoutilizado,
 M.acdc_accionesrealizadas,
 M.acdc_observaciones,
-(SELECT CASE WHEN E.emer_estado=&quot;A&quot; THEN &quot;ACTIVA&quot;
-WHEN E.emer_estado=&quot;C&quot; THEN &quot;CERRADA&quot;
+(SELECT CASE WHEN E.emer_estado='A' THEN'ACTIVA'
+WHEN E.emer_estado='C' THEN 'CERRADA'
 END) AS emer_estado,
-(SELECT CASE WHEN E.emer_nivel=&quot;1&quot; THEN &quot;Nivel 1 (Municipal)&quot;
-WHEN E.emer_nivel=&quot;2&quot; THEN &quot;Nivel 2 (Departamental)&quot;
-WHEN E.emer_nivel=&quot;3&quot; THEN &quot;Nivel 3 (Nacional)&quot;
-WHEN E.emer_nivel=&quot;4&quot; THEN &quot;Caracter Subito (Nacional)&quot;
-END) AS emer_nivel,
-(((TH.hora_valor*M.acdc_apoyovoluntarios)+(TH.hora_valor*M.acdc_apoyobi
-nomios))*M.acdc_horasoperacion) AS TIME_VALUE
+(SELECT CASE WHEN E.emer_nivel='1' THEN 'Nivel 1 (Municipal)'
+WHEN E.emer_nivel='2' THEN 'Nivel 2 (Departamental)'
+WHEN E.emer_nivel='3' THEN 'Nivel 3 (Nacional)'
+WHEN E.emer_nivel='4' THEN 'Caracter Subito (Nacional)'
+END) AS emer_nivel
 FROM emer_emergencia E
 LEFT JOIN trb_dirseccionales B ON E.emer_coddirseccionales=B.secc_id
 LEFT JOIN trb_municipios D ON E.emer_codmunicipio=D.muni_id
 LEFT JOIN trb_corregimientos G ON E.emer_codcorregimiento=G.corr_id
-LEFT JOIN trb_claseemergencias H ON
-E.emer_codclaseemergencia=H.clem_id
-LEFT JOIN trb_categoriaemergencias I ON
-E.emer_codcategoriaemergencia=I.caem_id
-LEFT JOIN trb_subcategorian1emergencias J ON
-E.emer_codsubcategorian1emergencia=J.sc1e_id
-LEFT JOIN trb_subcategorian2emergencias K ON
-E.emer_codsubcategorian2emergencia=K.sc2e_id
+LEFT JOIN trb_claseemergencias H ON E.emer_codclaseemergencia=H.clem_id
+LEFT JOIN trb_categoriaemergencias I ON E.emer_codcategoriaemergencia=I.caem_id
+LEFT JOIN trb_subcategorian1emergencias J ON E.emer_codsubcategorian1emergencia=J.sc1e_id
+LEFT JOIN trb_subcategorian2emergencias K ON E.emer_codsubcategorian2emergencia=K.sc2e_id
 LEFT JOIN emer_danos L ON E.emer_id= L.dano_codEmergencia
 LEFT JOIN emer_accionesdc M ON E.emer_id=M.acdc_codEmergencia
 LEFT JOIN trb_unirseemergencia Z ON Z.uni_id=E.emer_padre
 LEFT JOIN emer_hora TH ON TH.hora_id=M.acdc_codHora
-WHERE E.emer_padre!=&quot;&quot; OR E.emer_padre!=NULL
+LEFT JOIN orga_comite OC ON E.emer_coddirseccionales = OC.comi_id
+WHERE E.emer_padre!='' OR E.emer_padre!=NULL
 ORDER BY B.secc_nombre asc;
